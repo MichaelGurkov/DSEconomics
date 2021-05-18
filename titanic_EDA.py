@@ -29,6 +29,8 @@ sns.boxplot(x = "Survived",y = "Age", data = df_raw).set_title("Age by target")
 
 sns.boxplot(x = "Pclass",y = "Age",hue = "Survived", data = df_raw).set_title("Age by Pclass and target")
 
+sns.heatmap(df_raw.isnull())
+
 # Average age by pclass
 
 sns.barplot(data = df_raw.groupby("Pclass")["Age"].aggregate("mean").reset_index(),

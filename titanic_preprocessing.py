@@ -9,24 +9,30 @@ import os
 
 df_raw = pd.read_csv("C:" + os.environ["HOMEPATH"] + "\\Google Drive\\MTA\\Data Science applications for economists\\data\\train.csv")
 
+df = df_raw.copy()
+
 #Impute NA
 
 # impute age by averages by pclass
 
-df_raw["Age"] = df_raw.groupby("Pclass")["Age"].transform(lambda x:x.fillna(x.mean()))
+df["Age"] = df.groupby("Pclass")["Age"].transform(lambda x:x.fillna(x.mean()))
 
 # impute cabin by most frequent in "cheap" decks
 
-df_raw["Cabin_imp"] = df_raw["Cabin"].astype(str).apply(lambda x:x[0])
+df["Cabin"] = df["Cabin"].astype(str).apply(lambda x:x[0])
 
-df_raw["Cabin_imp"].unique()
+df["Cabin"].unique()
 
-df_raw[["Cabin_imp","Pclass"]].value_counts()
+df[["Cabin","Pclass"]].value_counts()
 
-df_raw["Cabin_imp"] = df_raw["Cabin_imp"].replace("n","F")    
+df["Cabin"] = df["Cabin"].replace("n","F")    
 
 # impute embarked by most frequent
 
 imp = SimpleImputer(strategy="most_frequent")
 
-df_raw["Embarked"] = imp.fit_transform(np.asarray(df_raw["Embarked"]).reshape(-1,1))
+df["Embarked"] = imp.fit_transform(np.asarray(df["Embarked"]).reshape(-1,1))
+
+# Encode nominal values
+
+df = pd.get_dummies(df, columns=["Sex","Embarked","Cabin","Pclass"])
